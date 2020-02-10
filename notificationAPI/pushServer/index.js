@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const cron = require('node-cron');
 const app = express();
-const port = 3000;
+const port = 1234;
 const webPush = require('web-push');
 // const storage = require('node-persist');
 
@@ -22,13 +22,13 @@ const allSubscriptions = {};
 // We want to use JSON to communicate with our app parse application/json
 const registerTasks = (subscription) => {
   const endpoint = subscription.endpoint;
-  const morningTask = cron.schedule('10 * * * * *', () => {
+  const morningTask = cron.schedule('0 8 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'morning' }));
   });
-  const afternoonTask = cron.schedule('30 * * * * *', () => {
+  const afternoonTask = cron.schedule('30 15 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'afternoon' }));
   });
-  const nightTask = cron.schedule('50 * * * * *', () => {
+  const nightTask = cron.schedule('0 23 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'evening' }));
   });
 
