@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<body>
+  <h1 id="title">Hey</h1>
+  <input id="name-field" placeholder="Enter Your Name"/>
+</body>
+
+<script>
+
+var bc = new BroadcastChannel('gator_channel');
+
+(()=>{
+  const title = document.getElementById('title');
+  const nameField = document.getElementById('name-field');
+  const setTitle = (name) => {
+    console.log('name', name)
+    title.innerHTML = 'Hey ' + name;
+  }
+
+  bc.onmessage = (messageEvent) => {
+    const data = messageEvent.data
+    // If our broadcast message is 'update_title' then get the new title from localStorage
+    switch (data.type) {
+      case 'update_title':
+        if (data.title){
+          setTitle(data.title);
+        }
+        else
+          setTitle(localStorage.getItem('title'));
+        break
+      default:
+        console.log('we received a message')
+    }
+  };
+
+  bc.onmessageerror = (em) => {
+    console.log('error')
+    console.log(em)
+  };
+  // When the page loads
+  if (localStorage.getItem('title')) {
+    setTitle(localStorage.getItem('title'));
+  } else {
+    setTitle('please tell us your name');
+  }
+
+  nameField.onchange = (e) => {
+    const inputValue = e.target.value;
+    console.log('input value', inputValue)
+    // In the localStorage we set title to the user's input
+    localStorage.setItem('title', inputValue);
+    // Update the title on the current page 
+    setTitle(inputValue);
+    // Tell the other pages to update the title
+    bc.postMessage({type: 'update_title', title: inputValue});
+  }
+})()
+</script>
+<style>
+body {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background: beige;
+  flex-wrap: wrap;
+  margin: 3rem;
+}
+#title {
+  width: 100%;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+</style>

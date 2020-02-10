@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+  <script>
+    navigator.permissions.query({name:'camera'}).then(res => {
+      res.onchange = ((e)=>{
+        if (e.type === 'change'){
+          const newState = e.target.state
+          if (newState === 'denied') {
+            console.log('why did you decide to block us?')
+          } else if (newState === 'granted') {
+            console.log(' we will be together forever!')
+          } else {
+            console.log('thanks for reverting back to normal')
+          }
+        }
+      })
+    })
+  </script>
+
+</head>
+<body>
+<h1> Hey </h1>
+<button id="subscribe-to-push">SUB PUSH</button>
+
+<h3>Required Permissions</h3>
+
+
+
+</body>
+<script>
+
+  
+// var video = document.createElement('video');
+// video.setAttribute('playsinline', '');
+// video.setAttribute('autoplay', '');
+
+// /* Stream it to video element */
+// navigator.mediaDevices.getUserMedia({video: {
+//   }}).then(function success(stream) {
+//   video.srcObject = stream;
+// });
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        // Registration was successful
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(err) {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+  </script>

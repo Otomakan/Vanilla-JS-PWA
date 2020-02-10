@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"/>
+<style>
+  body {
+    display: inline-block;
+    /* flex-wrap: wrap; */
+    /* width: 10px; */
+  }
+  button {
+    display: block;
+  }
+</style>
+</head>
+
+<body>
+  <label>Author</label>
+  <input type="text" name="author"  id="author-input"/>
+  <label>Picture Name</label>
+
+  <input type="text" name="title" id="title-input"/>
+  <label>Picture</label>
+
+  <input type="file" name="picture" id="picture-input"/>
+  <button id="submit-button">
+    SUBMIT
+  </button>
+  <script>
+    const inputs = document.getElementsByTagName('input');
+    // This object will keep track of the changes of inputs
+    const applicationState = {
+      title: "",
+      author: "",
+      picture: ""
+    }
+
+    document.getElementById('submit-button').onclick = async () => {
+      console.log(applicationState)
+      const form = new FormData();
+      // this is a bit redundant clearly show hpw FormData works
+      form.append('title', applicationState.title);
+      form.append('author', applicationState.author);
+      form.append('picture', applicationState.picture);
+      console.log(form.picture);
+      console.log(form.get('picture'));
+      const res = await fetch('https://postman-echo.com/post', {
+        method: 'POST',
+        mode: 'no-cors',
+        body: form
+      });
+      console.log(res)
+      console.log(res.body)
+      console.log(form.picture);
+      console.log(form.get('picture'));
+      // console.log('get all', form.getAll())
+      console.log('get all', form.getAll('title'))
+
+    }
+
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i]
+      const inputName = input.name
+
+      input.onchange = (e) => {
+        let value = e.target.value
+        // updating the application state according to the input the user interacted with
+        if (inputName === 'picture' && e.target.files[0]) {
+          setPicture(e.target.files[0]);
+        } else { 
+          applicationState[inputName] = value;
+        }
+      };
+    }
+
+    const setPicture = (file) => {
+      const fr = new FileReader();
+      // Reading the data and encoding it as base64 to send it to the server
+      fr.readAsDataURL(file);
+      // When the data is done loading we assign it to picture
+      fr.onloadend = (fileData) => {
+        applicationState.picture = fileData.target.result;
+      }
+    }
+  </script>
+
+  
+<form id="user-form">
+  <input type="text" name="username">
+  <input type="password" name="password">
+  <input type="file" name="picture" id="picture-input"/>
+  <input type="submit">
+</form>
+<script>
+  document.getElementById('user-form').onsubmit = async function (e) {
+      e.preventDefault();
+      // here `this` is the user-form HTML element
+      const form = new FormData(this);
+      ///... send form to server
+
+      const res = await fetch('https://postman-echo.com/post', {
+        method: 'POST',
+        mode: 'no-cors',
+        body: form
+      });
+      console.log(res)
+  }
+</script>
+</body>

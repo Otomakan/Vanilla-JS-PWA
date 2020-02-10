@@ -1,0 +1,11 @@
+body {
+  background: #222831;
+}
+
+div, p, span {
+  color: wheat;
+}
+
+h1, h2, h3, h4 {
+  color: #5bc1a5;
+}

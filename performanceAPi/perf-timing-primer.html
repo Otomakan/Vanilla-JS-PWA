@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body onload="loadResources()">
+    <script>
+       console.log(performance.now())
+       function loadResources()
+       {
+          var image1 = new Image();
+          image1.onload = resourceTiming;
+          image1.src = 'http://www.w3.org/Icons/w3c_main.png';
+       }
+
+      console.log(performance.getEntriesByType("navigation")[0])
+       function resourceTiming()
+       {
+           var resourceList = window.performance.getEntriesByType("resource");
+           console.log(resourceList)
+           for (i = 0; i < resourceList.length; i++)
+           {
+              if (resourceList[i].initiatorType == "img")
+              {
+                 console.log("End to end resource fetch: "+ resourceList[i].duration);
+              }
+           }
+       }
+       console.log(performance.now())
+    </script>
+    <img id="image0" src="https://vastphotos.com/files/uploads/photos/10175/high-resolution-new-york-city-skyline-l.jpg"/>
+
+    <img id="image0" src="https://vastphotos.com/files/uploads/photos/10175/high-resolution-new-york-city-skyline-l.jpg"/>
+  </body>
+</html>

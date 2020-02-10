@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel='manifest' href='./manifest.json'>
+  <meta name="theme-color" content="#222831">
+  
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js', { scope: './' })
+        .then( (registration) => {
+          registration.pushManager.getSubscription().then( (subscription) => {
+            if (subscription === null) {
+              // Update UI to ask user to register for Push
+              console.log('Not subscriptionscribed to push service!');
+            } else {
+              // We have a subscriptionscription, update the database
+              console.log('subscriptionscription object: ', subscription);
+            }
+          });
+              console.log('Service Worker Registered');
+        });
+  
+      navigator.serviceWorker.ready.then( (registration) => {
+          console.log('Service Worker Ready');
+      });
+    }
+  </script>
+</head>
+<body>
+<h1>Temporas</h1>
+<h2>Take your medicine bud </h2>
+<h2 id="status"></h2>
+
+<script src="./main.js"></script>
+</body>

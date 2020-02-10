@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+  <script>
+    let file
+    console.log('hey')
+    const handleFileChange = () => {
+      console.log('handling file change')
+      let photo = document.getElementById("file-input").files[0];
+      let formData = new FormData();
+      console.log(photo)
+      file = photo
+      formData.append("photo", photo);
+      formData.append('username', 'Chris');
+      console.log(formData.getAll('photo'));
+      fetch('/upload/image', {method: "POST", body: formData});
+    }
+</script>
+
+</head>
+<body>
+
+  <input type='file' id='file-input' onchange="handleFileChange()">
+
+</body>
+ 

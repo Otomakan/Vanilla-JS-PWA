@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel='manifest' href='./manifest.json'>
+  <meta name=" theme-color" content="#222831">
+  
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js', { scope: './' })
+        .then(function(registration) {
+              console.log('Service Worker Registered');
+        });
+  
+      navigator.serviceWorker.ready.then(function(registration) {
+          console.log('Service Worker Ready');
+      });
+    }
+  </script>
+</head>
+<body>
+<h1> Timer eye </h1>
+<h2>Status: </h2><h2 id="status"></h2>
+<div id="timer"></div>
+
+<script src="./main.js"></script>
+</body>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<body>
+  <h1>My body baby</h1>
+</body>
+<script>
+
+var bc = new BroadcastChannel('golo');
+bc.onmessage = () => {
+  console.log('received message')
+}
+</script>
