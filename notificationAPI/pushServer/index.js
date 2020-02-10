@@ -22,13 +22,15 @@ const allSubscriptions = {};
 // We want to use JSON to communicate with our app parse application/json
 const registerTasks = (subscription) => {
   const endpoint = subscription.endpoint;
-  const morningTask = cron.schedule('30 8 * * *', () => {
+
+  // My remote machine is on UTC time and I live in Japan so I made the appropriate calculation
+  const morningTask = cron.schedule('30 23 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'morning' }));
   });
-  const afternoonTask = cron.schedule('30 15 * * *', () => {
+  const afternoonTask = cron.schedule('30 6 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'afternoon' }));
   });
-  const nightTask = cron.schedule('0 23 * * *', () => {
+  const nightTask = cron.schedule('15 14 * * *', () => {
     sendNotification(subscription, JSON.stringify({ timeOfDay: 'evening' }));
   });
 
