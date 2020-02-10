@@ -4,54 +4,80 @@ const cron = require('node-cron');
 const app = express();
 const port = 3000;
 const webPush = require('web-push');
-require('dotenv').config();
+// const storage = require('node-persist');
 
-console.log(webPush.generateVAPIDKeys());
+require('dotenv').config();
 
 const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
 // const
 webPush.setVapidDetails(
-  'https://serviceworke.rs/',
+  'https://jmisteli.com',
   vapidPublicKey,
   vapidPrivateKey
 );
-const hardCodedSubscription = {
-  endpoint: 'https://fcm.googleapis.com/fcm/send/dS02aQyd8kM:APA91bHUzp--sdVCWPGMQYXHaJLRxbXJfo-lW_3qAmEIW-_r44ADPvrNjuaqVFVhwR-x8WjXaESJ31eLdNmWHApN055qGqS9t3nlo1HXnRcpTIehYDEG9LZoAhoLvHArcetOy5Ysk-mf',
-  expirationTime: null
-};
+
+const allSubscriptions = {};
+
 // We want to use JSON to communicate with our app parse application/json
-const registerTasks = () => {
-  cron.schedule('30 8 * * *', () => {
-    console.log('Time for you morning pill!');
+const registerTasks = (subscription) => {
+  const endpoint = subscription.endpoint;
+  const morningTask = cron.schedule('10 * * * * *', () => {
+    sendNotification(subscription, JSON.stringify({ timeOfDay: 'morning' }));
   });
-  cron.schedule('30 15 * * *', () => {
-    console.log('Time for you arvo pill!');
+  const afternoonTask = cron.schedule('30 * * * * *', () => {
+    sendNotification(subscription, JSON.stringify({ timeOfDay: 'afternoon' }));
   });
-  cron.schedule('3 10 * * *', () => {
-    console.log('Time for you evening pill!');
+  const nightTask = cron.schedule('50 * * * * *', () => {
+    sendNotification(subscription, JSON.stringify({ timeOfDay: 'evening' }));
   });
-  cron.schedule('* * * * * *', () => {
-    const payload = null;
-    const options = {
-      'TTL': 0
-    };
-    webPush.sendNotification(hardCodedSubscription, payload, options)
-      .then(function(res) {
-        res.sendStatus(201);
-      }).catch(e=>{
-        console.log(e)
-      })
-  });
+
+  allSubscriptions[endpoint] = [morningTask, afternoonTask, nightTask];
 };
 
 app.use(express.static('public'));
 // Tasks
-registerTasks();
 app.use(bodyParser.json());
+
+app.post('/subscribe', (req, res) => {
+  const subscription = req.body;
+  registerTasks(subscription);
+  console.log(allSubscriptions);
+  res.send('subscribed!');
+});
 
 app.get('/vapid-public-key', (req, res) => res.send({ vapidPublicKey }));
 
 app.get('/public');
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
+
+const sendNotification = (subscription, payload) => {
+  console.log('send Notification');
+  console.log(subscription);
+  const options = {
+    TTL: 0
+  };
+  if (!subscription.keys) {
+    payload = payload || null;
+  }
+
+  console.log(payload, 'payload');
+
+  webPush.sendNotification(subscription, payload, options)
+    .then(res => {
+      console.log('sent');
+    }).catch(e => {
+      console.log(e);
+    });
+};
+
+app.post('/unsubscribe', (req, res) => {
+  console.log(req.body);
+  const endpoint = req.body.endpoint;
+  allSubscriptions[endpoint].forEach(task => {
+    // destroy allows us to delete a task
+    task.destroy();
+  });
+  delete allSubscriptions[endpoint]
+});

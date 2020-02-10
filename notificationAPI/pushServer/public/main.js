@@ -1,7 +1,5 @@
 (async () => {
-  console.log('in await');
   const registration = await navigator.serviceWorker.ready;
-  console.log(registration);
 
   let subscription = await registration.pushManager.getSubscription();
 
@@ -11,12 +9,13 @@
   }
 
   // The subscription object in chrome:
-  // {
-  //   endpoint: "https://fcm.googleapis.com/fcm/send/dS02aQyd8kM:APA91bHUzp--sdVCWPGMQYXHaJLRxbXJfo-lW_3qAmEIW-_r44ADPvrNjuaqVFVhwR-x8WjXaESJ31eLdNmWHApN055qGqS9t3nlo1HXnRcpTIehYDEG9LZoAhoLvHArcetOy5Ysk-mf",
-  //   expirationTime: null
-  // }
+  //  endpoint: "https://fcm.googleapis.com/fcm/send/cyMiHqakiZE:APA91bFUIYbrvtnSGw0dwargHllB2BGJiwNu-Svf7KkpRM9YQ8PrCzpr8gOQxHCPXD-4Y-lGcQmZDpyZ8I8Gugv2RmOWRAU0sO7DfvB5XoyeO7hHU4KMtiDulQ8mY-fj5xhyOxPejIvF"
+  // expirationTime: null
+  // keys:
+  // p256dh: "BJG5rNdalnpu6yuRSuly3H221ljDVYRvDmEx_F6qNllUONAR8vJ_R03c8qgR06O2sfa1hvFzpR5b7iVRitRS-Qk"
+  // auth: "zG9-yhkAzIdknhMW0d89Aw"
 
-  console.log(subscription);
+  document.getElementById('unsubscribe').onclick = () => unsubscribe();
 })().catch(e => {
   alert(`There has been an error 
         ${e.toString()}`);
@@ -40,10 +39,32 @@ const subscribe = async (registration) => {
     applicationServerKey: Uint8ArrayPublicKey
   });
 
+  await fetch('/subscribe',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription.toJSON())
+    });
   return subscription;
 };
 
-// I have found this code (or variations of) from multiple sources
+const unsubscribe = async () => {
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  await subscription.unsubscribe();
+  await fetch('/unsubscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(subscription.toJSON())
+  });
+  writeSubscriptionStatus('Unsubscribed');
+};
+
+const writeSubscriptionStatus = (subscriptionStatus) => {
+  document.getElementById('status').innerHTML = subscriptionStatus;
+};
+
+// I have found this code (or variations of) from; multiple sources
 // but I could not find the original author
 const urlBase64ToUint8Array = (base64String) => {
   var padding = '='.repeat((4 - base64String.length % 4) % 4);

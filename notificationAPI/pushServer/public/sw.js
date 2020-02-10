@@ -1,41 +1,15 @@
 const cacheName = 'alligator-eyes';
 
-
-// Cache all the files
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll([
-        './',
-        './index.html',
-        './styles.css',
-        './main.js',
-        './manifest.json'
-      ]);
-    })
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-  console.log('run script');
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.open(cacheName)
-      .then(cache => cache.match(event.request, { ignoreSearch: true }))
-      .then(response => {
-        return response || fetch(event.request);
-      })
-  );
-});
-
-
 self.addEventListener('push', function (e) {
+  // const timeOfDay = e.data.text();
+  // We can do e.data.json( )
+  // console.log(e.data)
+  // Here we use json just to show we can
+  const timeOfDay = e.data.json().timeOfDay;
+
   var options = {
-    body: 'This notification was generated from a push!',
-    icon: 'https://picsum.photos/300/200',
+    body: `Time to take your ${timeOfDay} pill`,
+    icon: '/images/icons/icon-512x512.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -43,18 +17,42 @@ self.addEventListener('push', function (e) {
     },
     actions: [
       {
-        action: 'explore',
-        title: 'Explore this new world',
-        icon: 'images/checkmark.png'
-      },
-      {
         action: 'close',
-        title: 'Close',
-        icon: 'images/xmark.png'
+        title: 'Close'
       }
     ]
   };
   e.waitUntil(
-    self.registration.showNotification('Hello world!', options)
+    self.registration.showNotification('Pill Time!', options)
   );
 });
+
+// // Cache all the files to make a PWA
+// self.addEventListener('install', e => {
+//   e.waitUntil(
+//     caches.open(cacheName).then(cache => {
+//       return cache.addAll([
+//         './',
+//         './index.html',
+//         './styles.css',
+//         './main.js',
+//         './manifest.json'
+//       ]);
+//     })
+//   );
+// });
+
+// self.addEventListener('activate', event => {
+//   event.waitUntil(self.clients.claim());
+//   console.log('run script');
+// });
+
+// self.addEventListener('fetch', event => {
+//   event.respondWith(
+//     caches.open(cacheName)
+//       .then(cache => cache.match(event.request, { ignoreSearch: true }))
+//       .then(response => {
+//         return response || fetch(event.request);
+//       })
+//   );
+// });

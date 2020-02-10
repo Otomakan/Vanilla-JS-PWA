@@ -9,16 +9,7 @@
     if('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js', { scope: './' })
         .then( (registration) => {
-          registration.pushManager.getSubscription().then( (subscription) => {
-            if (subscription === null) {
-              // Update UI to ask user to register for Push
-              console.log('Not subscriptionscribed to push service!');
-            } else {
-              // We have a subscriptionscription, update the database
-              console.log('subscriptionscription object: ', subscription);
-            }
-          });
-              console.log('Service Worker Registered');
+          registration.pushManager.getSubscription()
         });
   
       navigator.serviceWorker.ready.then( (registration) => {
@@ -31,6 +22,6 @@
 <h1>Temporas</h1>
 <h2>Take your medicine bud </h2>
 <h2 id="status"></h2>
-
+<button id="unsubscribe">unsubscribe</button>
 <script src="./main.js"></script>
 </body>
