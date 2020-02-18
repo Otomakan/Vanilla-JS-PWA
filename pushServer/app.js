@@ -4,6 +4,7 @@ const cron = require('node-cron');
 const app = express();
 const port = 3000;
 const webPush = require('web-push');
+const path = require('path');
 // const storage = require('node-persist');
 
 require('dotenv').config();
@@ -38,6 +39,7 @@ const registerTasks = (subscription) => {
 };
 
 app.use(express.static('public'));
+
 // Tasks
 app.use(bodyParser.json());
 
@@ -51,6 +53,7 @@ app.post('/subscribe', (req, res) => {
 app.get('/vapid-public-key', (req, res) => res.send({ vapidPublicKey }));
 
 app.get('/public');
+app.get('/smallest', (req, res) => res.sendFile(path.resolve(__dirname, 'smallest', 'index.html')));
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
 
@@ -81,5 +84,5 @@ app.post('/unsubscribe', (req, res) => {
     // destroy allows us to delete a task
     task.destroy();
   });
-  delete allSubscriptions[endpoint]
+  delete allSubscriptions[endpoint];
 });

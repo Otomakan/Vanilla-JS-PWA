@@ -19,6 +19,7 @@ self.addEventListener('install', e => {
 // and check if we have cached the file
 // if so it will serve the cached file
 self.addEventListener('fetch', event => {
+  console.log('fetching1')
   event.respondWith(
     caches.open(cacheName)
       .then(cache => cache.match(event.request, { ignoreSearch: true }))

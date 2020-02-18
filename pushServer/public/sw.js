@@ -1,4 +1,4 @@
-const cacheName = 'alligator-eyes';
+const cacheName = 'temporas';
 
 self.addEventListener('push', function (e) {
   // const timeOfDay = e.data.text();
@@ -29,6 +29,7 @@ self.addEventListener('push', function (e) {
 
 // Cache all the files to make a PWA
 self.addEventListener('install', e => {
+  console.log('installing')
   e.waitUntil(
     caches.open(cacheName).then(cache => {
       return cache.addAll([
@@ -42,10 +43,10 @@ self.addEventListener('install', e => {
   );
 });
 
-// self.addEventListener('activate', event => {
-//   event.waitUntil(self.clients.claim());
-//   console.log('run script');
-// });
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+  console.log('run script');
+});
 
 self.addEventListener('fetch', event => {
   event.respondWith(
