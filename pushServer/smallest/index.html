@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name="theme-color" content="#222831">
+
+  <link rel='manifest' href='./manifest.json'>
+  
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js', { scope: './' })
+        .then( (registration) => {
+          registration.pushManager.getSubscription()
+        })
+        .catch(()=>{
+          console.log('hey')
+        })
+    }
+  </script>
+</head>
+<body>
+  <div class="hero">
+    <h1>Temporas</h1>
+    <h2>Take your medicine bud </h2>
+    <div id="status"></div>
+    <button id="unsubscribe">unsubscribe</button>
+  </div>
+<!-- <script src="./main.js"></script> -->
+</body>

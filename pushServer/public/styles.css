@@ -1,0 +1,43 @@
+body {
+  width: 100vw;
+  background: #222831;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+}
+
+div, p, span {
+  color: wheat;
+}
+
+h1, h2, h3, h4 {
+  color: #ffad17;
+}
+
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: space-between;
+  flex-wrap: wrap;
+  border: 3px solid #ffad17;
+  color: #ffad17;
+  width: min-content;
+  min-height: 80vh;
+  border-radius: 15px;
+
+}
+.hero > h1, h2, button{
+  margin: 15px;
+}
+
+button {
+  background-color: #222831;
+  border: 3px solid #ffad17;
+  color: #ffad17;
+  border-radius: 15px;
+  padding: 14px 24px;
+  cursor: pointer;
+}
